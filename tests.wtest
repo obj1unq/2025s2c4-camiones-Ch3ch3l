@@ -1,7 +1,7 @@
 import camion.*
 import cosas.*
 
-describe "Prueba de los objetos"{
+describe "Prueba de objetos"{
     
     test "Un knight rider pesa 500kg y tiene peligrosidad 10" {
         assert.equals(500, knightRider.peso())
@@ -41,5 +41,48 @@ describe "Prueba de los objetos"{
         const rr = new ResiduosRadiactivos(cantidad = 100)
         assert.equals(100, rr.peso())
         assert.equals(200, rr.nivelPeligrosiadad())
+    }
+}
+describe "Carga en camion"{
+   
+    test "Si no cargo nada el camion esta vacio" {
+        assert.equals(#{}, camion.todaLaCarga())
+    }
+    test "Cargar varias cosas"{
+        const bumblebee = new Bumblebee(esAuto = true)
+        camion.cargar(knightRider)
+        assert.equals(#{knightRider}, camion.todaLaCarga())//Solo tiene al knightRider
+        camion.cargar(bumblebee)
+        assert.equals(#{knightRider, bumblebee}, camion.todaLaCarga())//Tiene al knightRider y bumblebee
+        camion.descargar(bumblebee)
+        assert.equals(#{knightRider}, camion.todaLaCarga())//Solo tiene al knightRider de nuevo
+        camion.cargar(knightRider)
+        camion.descargar(bumblebee)
+    }
+    test "Un bumblebee y 50kg de arena tienen peso par"{
+        const bumblebee = new Bumblebee(esAuto = true)
+        const arena50kg = new ArenaAGranel(cantidad = 50)
+        camion.cargar(bumblebee)
+        camion.cargar(arena50kg)
+        assert.equals(true, camion.totalPesoPar())
+    }
+    test "55 kg de arena NO tiene peso par"{
+        const arena55kg = new ArenaAGranel(cantidad =55)
+        camion.cargar(arena55kg)
+        assert.equals(false, camion.totalPesoPar())
+    }
+    test "Hay carga con peso X"{
+        const bumblebee = new Bumblebee(esAuto = true)
+        camion.cargar(bumblebee)
+        assert.equals(true, camion.hayCargaConPesoX(800))
+    }
+    test "Hay carga con peso X (varios elementos)"{
+        const bumblebee = new Bumblebee(esAuto = true)
+        const arena50kg = new ArenaAGranel(cantidad = 50)
+        camion.cargar(bumblebee)
+        camion.cargar(arena50kg)
+        assert.equals(true, camion.hayCargaConPesoX(50))
+        assert.equals(true, camion.hayCargaConPesoX(800))
+        assert.equals(false, camion.hayCargaConPesoX(500))
     }
 }
