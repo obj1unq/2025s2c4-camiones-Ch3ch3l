@@ -27,4 +27,7 @@ object camion {
 	method descargar(unaCosa) {
 		cosas.remove(unaCosa)
 	}
+	method huboAccidente() {
+		cosas.forEach({cosa => cosa.sufrioAccidente()})
+	}
 }

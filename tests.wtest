@@ -283,3 +283,42 @@ describe "Caso bultos"{
         assert.equals(4, camion.cantidadDeBultosTotal())
     }
 }
+describe "Camion tiene accidentes"{
+    test "Camion sufre accidente con contenedor(knightRider y bumblebee auto), embalaje(30kg residuos), 50kg arena, paquete 100 ladrillos y bateria cargada"{
+        contenedorPortuario.cargar(knightRider)
+        contenedorPortuario.cargar(bumblebee)
+        const residuosRadioactivos = new ResiduosRadiactivos(cantidad = 30)
+        const embalaje = new EmbalajeDeSeguridad(cosaEmbalada = residuosRadioactivos)
+        const arena = new ArenaAGranel(cantidad = 50)
+        const paquete100Ladrillos = new PaqueteDeLadrillos(cantidad =100)
+        const bateriaConMisiles = new BateriaAntiaerea(tieneMisiles = true)
+        camion.cargar(contenedorPortuario)
+        camion.cargar(embalaje)// No cambia
+        camion.cargar(arena)
+        camion.cargar(paquete100Ladrillos)
+        camion.cargar(bateriaConMisiles)
+        camion.huboAccidente()
+        assert.equals(30, bumblebee.nivelPeligrosidad())//Si es 30 esta en modo robot
+        assert.equals(70, arena.peso())
+        assert.equals(88, paquete100Ladrillos.peso()/2)
+        assert.equals(false, bateriaConMisiles.tieneMisiles())
+        assert.equals(30, residuosRadioactivos.peso())
+
+    }
+    test "Camion sufre accidente con bumblebee(robot), 30kg de residuos, un paquete de 10 ladrillos y una bateria descargada"{
+        bumblebee.cambiarModo()//Pongo a bumblebee en modo robot
+        const residuosRadioactivos = new ResiduosRadiactivos(cantidad = 30)
+        const paquete10Ladrillos = new PaqueteDeLadrillos(cantidad =10)
+        const bateriaSinMisiles = new BateriaAntiaerea(tieneMisiles = false)
+        camion.cargar(bumblebee)
+        camion.cargar(residuosRadioactivos)
+        camion.cargar(paquete10Ladrillos)
+        camion.cargar(bateriaSinMisiles)
+        camion.huboAccidente()
+        assert.equals(15, bumblebee.nivelPeligrosidad())
+        assert.equals(45, residuosRadioactivos.peso())
+        assert.equals(0, paquete10Ladrillos.peso())
+        assert.equals(false, bateriaSinMisiles.tieneMisiles())
+    
+    }
+}

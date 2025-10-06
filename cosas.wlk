@@ -3,6 +3,7 @@ object knightRider {
 	method peso() { return 500 }
 	method nivelPeligrosidad() { return 10 }
 	method bulto() = 1
+	method sufrioAccidente() {}
 }
 object bumblebee {
 	var esAuto = true
@@ -20,7 +21,9 @@ object bumblebee {
 	method cambiarModo() {
 		esAuto = not esAuto
 	}
-	
+	method sufrioAccidente() {
+		self.cambiarModo()
+	}
 }
 object contenedorPortuario {
 	const cosas = #{}
@@ -41,19 +44,25 @@ object contenedorPortuario {
 		cosas.remove(unaCosa)
 	}
 	method bulto() = 1 + cosas.sum({cosa => cosa.bulto()})
+	method sufrioAccidente(){
+		cosas.forEach({cosa => cosa.sufrioAccidente()})
+	}
 }
 // Clases
 class ArenaAGranel {
-	const cantidad
+	var cantidad
 
 	method peso() = cantidad
 	method nivelPeligrosidad() = 1
 	method bulto() = 1
+	method sufrioAccidente() {
+		cantidad += 20
+	}
 }
 
 
 class PaqueteDeLadrillos {
-	const cantidad
+	var cantidad
 
 	method peso() = cantidad * 2
 	method nivelPeligrosidad() = 2
@@ -68,10 +77,18 @@ class PaqueteDeLadrillos {
 			return 3
 		}
 	}
+	method sufrioAccidente() {
+		if (cantidad >= 12) {
+			cantidad -= 12
+		}
+		else {
+			cantidad = 0
+		}
+	}
 }
 
 class BateriaAntiaerea {
-	const tieneMisiles
+	var property tieneMisiles
 
 	method peso() {
 		if (tieneMisiles) {
@@ -97,13 +114,19 @@ class BateriaAntiaerea {
 			return 1
 		}
 	}
+	method sufrioAccidente() {
+		tieneMisiles = false
+	}
 }
 class ResiduosRadiactivos {
-	const cantidad
+	var cantidad
 
 	method peso() = cantidad
 	method nivelPeligrosidad() = 200
 	method bulto() = 1
+	method sufrioAccidente() {
+		cantidad += 15
+	}
 }
 
 class EmbalajeDeSeguridad {
@@ -116,4 +139,5 @@ class EmbalajeDeSeguridad {
 	method embalar(unaCosa){
 		cosaEmbalada = unaCosa
 	}
+	method sufrioAccidente(){}
 }
