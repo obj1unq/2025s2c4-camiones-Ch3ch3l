@@ -62,12 +62,12 @@ describe "Carga en camion"{
         const arena50kg = new ArenaAGranel(cantidad = 50)
         camion.cargar(bumblebee)
         camion.cargar(arena50kg)
-        assert.equals(true, camion.totalPesoPar())
+        assert.equals(true, camion.pesoTotalPar())
     }
     test "55 kg de arena NO tiene peso par"{
         const arena55kg = new ArenaAGranel(cantidad =55)
         camion.cargar(arena55kg)
-        assert.equals(false, camion.totalPesoPar())
+        assert.equals(false, camion.pesoTotalPar())
     }
     test "Hay carga con peso X"{
         camion.cargar(bumblebee)
@@ -159,5 +159,29 @@ describe "Circular en rutas"{
         camion.cargar(bumblebee)
         assert.equals(false, camion.estaLleno())
         assert.equals(false, camion.puedeCircularEnRutaDeNivel(20))
+    }
+
+}
+describe "Prueba de los nuevos objetos"{
+    test "Un contenedor portuario vacio pesa 100kg y tiene peligrosidad 0"{
+        assert.equals(100, contenedorPortuario.peso())
+        assert.equals(0, contenedorPortuario.nivelPeligrosidad())
+    }
+    test "Un contenedor con un knight rider y 50kg de arena pesa 650kg y tiene peligrosidad 10"{
+        const arena50kg = new ArenaAGranel(cantidad = 50)
+        contenedorPortuario.cargar(knightRider)
+        contenedorPortuario.cargar(arena50kg)
+        assert.equals(650, contenedorPortuario.peso())
+        assert.equals(10, contenedorPortuario.nivelPeligrosidad())
+    }
+    test "Si embalaje envuelve a knight rider pesa 500kg y tiene peligrosidad 5"{
+        const embalaje = new EmbalajeDeSeguridad(cosaEmbalada = knightRider)
+        assert.equals(500, embalaje.peso())
+        assert.equals(5, embalaje.nivelPeligrosidad())
+    }
+    test "Si embalaje envuelve a Bumblebee modo auto pesa 800kg y tiene peligrosidad 7,5"{
+        const embalaje = new EmbalajeDeSeguridad(cosaEmbalada = bumblebee)
+        assert.equals(800, embalaje.peso())
+        assert.equals(7.5, embalaje.nivelPeligrosidad())
     }
 }

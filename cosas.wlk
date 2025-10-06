@@ -20,16 +20,22 @@ object bumblebee {
 	}
 }
 object contenedorPortuario {
-	const cosasAdentro = #{}
+	const cosas = #{}
 	
-	method peso() = 100 + cosasAdentro.sum({cosa => cosa.peso()})
+	method peso() = 100 + cosas.sum({cosa => cosa.peso()})
 	method nivelPeligrosidad() {
-			if (cosasAdentro.isEmpty()) {
+			if (cosas.isEmpty()) {
 				return 0
 			}
 			else {
-				return cosasAdentro.map({cosa => cosa.nivelPeligrosidad()}).max() // Transformo objetos a numeros(peligrosidad) y hago un max
+				return cosas.map({cosa => cosa.nivelPeligrosidad()}).max() // Transformo objetos a numeros(peligrosidad) y hago un max
 			}
+	}
+	method cargar(unaCosa) {
+		cosas.add(unaCosa)
+	}
+	method descargar(unaCosa) {
+		cosas.remove(unaCosa)
 	}
 }
 // Clases
