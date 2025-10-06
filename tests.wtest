@@ -13,14 +13,13 @@ describe "Prueba de objetos"{
         assert.equals(1, ag.nivelPeligrosidad())
     }
     test "Un bumblebee que es auto pesa 800 y tiene peligrosidad 15" {
-        const bb = new Bumblebee(esAuto = true)
-        assert.equals(800, bb.peso())
-        assert.equals(15, bb.nivelPeligrosidad())
+        assert.equals(800, bumblebee.peso())
+        assert.equals(15, bumblebee.nivelPeligrosidad())
     }
     test "Un bumblebee que es robot pesa 800 y tiene peligrosidad 30" {
-        const bb = new Bumblebee(esAuto = false)
-        assert.equals(800, bb.peso())
-        assert.equals(30, bb.nivelPeligrosidad())
+        assert.equals(800, bumblebee.peso())
+        bumblebee.cambiarModo()
+        assert.equals(30, bumblebee.nivelPeligrosidad())
     }
     test "Un paquete de 100 ladrillos pesa 200kg y tiene peligrosidad 2" {
         const pl = new PaqueteDeLadrillos(cantidad = 100)
@@ -40,7 +39,7 @@ describe "Prueba de objetos"{
     test "Un paquete de 100kg de residuos radiactivos pesa 100kg y tiene peligrosidad 200" {
         const rr = new ResiduosRadiactivos(cantidad = 100)
         assert.equals(100, rr.peso())
-        assert.equals(200, rr.nivelPeligrosiadad())
+        assert.equals(200, rr.nivelPeligrosidad())
     }
 }
 describe "Carga en camion"{
@@ -50,7 +49,6 @@ describe "Carga en camion"{
         assert.equals(true, camion.estaVacio())
     }
     test "Cargar varias cosas"{
-        const bumblebee = new Bumblebee(esAuto = true)
         camion.cargar(knightRider)
         assert.equals(#{knightRider}, camion.todaLaCarga())//Solo tiene al knightRider
         camion.cargar(bumblebee)
@@ -61,7 +59,6 @@ describe "Carga en camion"{
         camion.descargar(bumblebee)
     }
     test "Un bumblebee y 50kg de arena tienen peso par"{
-        const bumblebee = new Bumblebee(esAuto = true)
         const arena50kg = new ArenaAGranel(cantidad = 50)
         camion.cargar(bumblebee)
         camion.cargar(arena50kg)
@@ -73,36 +70,94 @@ describe "Carga en camion"{
         assert.equals(false, camion.totalPesoPar())
     }
     test "Hay carga con peso X"{
-        const bumblebee = new Bumblebee(esAuto = true)
         camion.cargar(bumblebee)
-        assert.equals(true, camion.hayCargaConPesoX(800))
+        assert.equals(true, camion.hayCargaConPeso(800))
     }
     test "Hay carga con peso X (varios elementos)"{
-        const bumblebee = new Bumblebee(esAuto = true)
         const arena50kg = new ArenaAGranel(cantidad = 50)
         camion.cargar(bumblebee)
         camion.cargar(arena50kg)
-        assert.equals(true, camion.hayCargaConPesoX(50))
-        assert.equals(true, camion.hayCargaConPesoX(800))
-        assert.equals(false, camion.hayCargaConPesoX(500))
+        assert.equals(true, camion.hayCargaConPeso(50))
+        assert.equals(true, camion.hayCargaConPeso(800))
+        assert.equals(false, camion.hayCargaConPeso(500))
     }
 }
 describe "Peso en el camion" {
     test "Con un paquete de 300 ladrillos y un bumblebee el camion no esta lleno"{
         const pl = new PaqueteDeLadrillos(cantidad = 300)
-        const bumblebee = new Bumblebee(esAuto = true)
         camion.cargar(pl)
         camion.cargar(bumblebee)
         assert.equals(2400, camion.pesoTotal())
-        assert.equals(false, camion.camionLleno())
+        assert.equals(false, camion.estaLleno())
     }
     test "Con un paquete de 400 ladrillos y un bumblebee el camion esta lleno"{
         const pl = new PaqueteDeLadrillos(cantidad = 400)
-        const bumblebee = new Bumblebee(esAuto = true)
         camion.cargar(pl)
         camion.cargar(bumblebee)
         assert.equals(2600, camion.pesoTotal())
-        assert.equals(true, camion.camionLleno())
+        assert.equals(true, camion.estaLleno())
+    }
+}
+describe "Peligrosidad en el camion"{ 
+    test "Buscar objeto peligroso entre un bumblebee, una bateriaerea y residuos radiactivos"{
+        const bateria = new BateriaAntiaerea(tieneMisiles = false)
+        const residuosRadiactivos = new ResiduosRadiactivos(cantidad = 100)
+        camion.cargar(bumblebee)
+        camion.cargar(bateria)
+        camion.cargar(residuosRadiactivos)
+        assert.equals(bateria, camion.cosaConPeligrosidad(0))
+        assert.equals(bumblebee, camion.cosaConPeligrosidad(15))
+        assert.equals(residuosRadiactivos, camion.cosaConPeligrosidad(200))
+        assert.equals(null, camion.cosaConPeligrosidad(30))//No hay ninguno con peligrosidad 30
+        bumblebee.cambiarModo()
+        assert.equals(bumblebee, camion.cosaConPeligrosidad(30))
+    }
+    test "Cosas mas peligrosas que nivel dado"{
+        const bateria = new BateriaAntiaerea(tieneMisiles = true)
+        const paqueteLadrillosDe10 = new PaqueteDeLadrillos(cantidad = 10)
+        const residuos = new ResiduosRadiactivos(cantidad = 100)
+        camion.cargar(bateria)
+        camion.cargar(knightRider)
+        assert.equals(#{bateria}, camion.cosasQueSuperanPeligrosidad(15))
+        assert.equals(#{bateria}, camion.cosasMasPeligrosasQue(bumblebee))
+        assert.equals(#{bateria, knightRider}, camion.cosasQueSuperanPeligrosidad(2))
+        assert.equals(#{bateria, knightRider}, camion.cosasMasPeligrosasQue(paqueteLadrillosDe10))
+        assert.equals(#{}, camion.cosasQueSuperanPeligrosidad(200))
+        assert.equals(#{}, camion.cosasMasPeligrosasQue(residuos))
     }
 
+}
+describe "Circular en rutas"{
+    test "Camion vacio puede circular en cualquier ruta"{
+        assert.equals(true, camion.puedeCircularEnRutaDeNivel(0))
+        assert.equals(true, camion.puedeCircularEnRutaDeNivel(10))
+        assert.equals(true, camion.puedeCircularEnRutaDeNivel(1000))
+    }
+    test "Camion con solo un bumblebee modo auto puede circular en rutas de nivel 15 o mas"{
+        camion.cargar(bumblebee)
+        assert.equals(false, camion.puedeCircularEnRutaDeNivel(10))
+        assert.equals(true, camion.puedeCircularEnRutaDeNivel(15))
+        assert.equals(true, camion.puedeCircularEnRutaDeNivel(20))
+    }
+    test "Un camion con un bumblebee auto y un paquete de 300 ladrillos puede circular en una ruta de nivel 20"{
+        const paquete300Ladrillos = new PaqueteDeLadrillos(cantidad = 300)
+        camion.cargar(bumblebee)
+        camion.cargar(paquete300Ladrillos)
+        assert.equals(true, camion.puedeCircularEnRutaDeNivel(20))
+    }
+    test "Un camion con un bumblebee auto y un paquete de 400 ladrillos no puede circular en ruta nivel 20 por peso"{
+        const paquete400Ladrillos = new PaqueteDeLadrillos(cantidad = 400)
+        camion.cargar(bumblebee)
+        camion.cargar(paquete400Ladrillos)
+        assert.equals(true, camion.estaLleno())
+        assert.equals(false, camion.puedeCircularEnRutaDeNivel(20))
+    }
+    test "Un camion con un bumblebee robot y un paquete de 300 ladrillos no puede circular en ruta de nivel 20 por peligrosdad"{
+        const paquete300Ladrillos = new PaqueteDeLadrillos(cantidad = 300)
+        camion.cargar(paquete300Ladrillos)
+        bumblebee.cambiarModo()
+        camion.cargar(bumblebee)
+        assert.equals(false, camion.estaLleno())
+        assert.equals(false, camion.puedeCircularEnRutaDeNivel(20))
+    }
 }
