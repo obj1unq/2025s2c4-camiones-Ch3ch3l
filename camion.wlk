@@ -11,10 +11,13 @@ object camion {
 	method pesoTotal() = pesoCamion + cosas.sum({cosa => cosa.peso()})
 	method pesoTotalPar() = self.pesoTotal() % 2 == 0
 	method hayCargaConPeso(peso) = self.todaLaCarga().any({cosa => cosa.peso() == peso})
-	method cosaConPeligrosidad(nivelPeligrosidad) = self.todaLaCarga().findOrDefault({cosa => cosa.nivelPeligrosidad() == nivelPeligrosidad}, null)
+	method cosaConPeligrosidad(nivelPeligrosidad) = self.todaLaCarga().find({cosa => cosa.nivelPeligrosidad() == nivelPeligrosidad})
 	method cosasQueSuperanPeligrosidad(nivelPeligrosidad) = self.todaLaCarga().filter({cosa => cosa.nivelPeligrosidad() > nivelPeligrosidad})
 	method cosasMasPeligrosasQue(unaCosa) = self.cosasQueSuperanPeligrosidad(unaCosa.nivelPeligrosidad())
 	method puedeCircularEnRutaDeNivel(nivelPeligrosidadMaximo) = (self.todaLaCarga().all({cosa => cosa.nivelPeligrosidad() <= nivelPeligrosidadMaximo}) and (not self.estaLleno()))
+	method tieneAlgoQuePesaEntre(pesoMin, pesoMax) =self.todaLaCarga().any({cosa => cosa.peso() >= pesoMin and cosa.peso() <= pesoMax})
+	method cosaMasPesada() = self.todaLaCarga().max({cosa => cosa.peso()})
+	method pesoDeCadaCosaCargada() = self.todaLaCarga().map({cosa => cosa.peso()})
 
 	
 	method cargar(unaCosa) {
@@ -23,7 +26,4 @@ object camion {
 	method descargar(unaCosa) {
 		cosas.remove(unaCosa)
 	}
-
-
-
 }

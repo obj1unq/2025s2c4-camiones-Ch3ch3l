@@ -108,7 +108,7 @@ describe "Peligrosidad en el camion"{
         assert.equals(bateria, camion.cosaConPeligrosidad(0))
         assert.equals(bumblebee, camion.cosaConPeligrosidad(15))
         assert.equals(residuosRadiactivos, camion.cosaConPeligrosidad(200))
-        assert.equals(null, camion.cosaConPeligrosidad(30))//No hay ninguno con peligrosidad 30
+        assert.throwsException({camion.cosaConPeligrosidad(30)})//No hay ninguno con peligrosidad 30
         bumblebee.cambiarModo()
         assert.equals(bumblebee, camion.cosaConPeligrosidad(30))
     }
@@ -184,4 +184,30 @@ describe "Prueba de los nuevos objetos"{
         assert.equals(800, embalaje.peso())
         assert.equals(7.5, embalaje.nivelPeligrosidad())
     }
+}
+describe "Camion con nuevos mensajes de peso"{
+    test "Saber si hay algo con peso entre 2 pesos dados"{
+        const paquete300Ladrillos = new PaqueteDeLadrillos(cantidad = 300)
+        camion.cargar(bumblebee)
+        camion.cargar(paquete300Ladrillos)
+        assert.equals(true, camion.tieneAlgoQuePesaEntre(5, 700))
+        assert.equals(true, camion.tieneAlgoQuePesaEntre(5, 1000))
+        assert.equals(false, camion.tieneAlgoQuePesaEntre(900, 1000))
+    }
+    test "Entre un bumblebee y un paquete de 300 ladrillos, la cosa mas pesada es bumblebee"{
+        const paquete300Ladrillos = new PaqueteDeLadrillos(cantidad = 300)
+        camion.cargar(bumblebee)
+        camion.cargar(paquete300Ladrillos)
+        assert.equals(bumblebee, camion.cosaMasPesada())
+    }
+    test "Si el camion esta vacio, tira una excepcion"{
+        assert.throwsException({camion.cosaMasPesada()})
+    }
+    test "Peso de cada cosa cargada"{
+        const paquete300Ladrillos = new PaqueteDeLadrillos(cantidad = 300)
+        camion.cargar(bumblebee)
+        camion.cargar(paquete300Ladrillos)
+        assert.equals([800, 600], camion.pesoDeCadaCosaCargada())
+    }
+    
 }
