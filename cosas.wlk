@@ -10,8 +10,8 @@ class ArenaAGranel {
 	method nivelPeligrosidad() = 1
 }
 
-class Bumblebee {
-	const esAuto
+object bumblebee {
+	var esAuto = true
 	
 	method peso() = 800
 	method nivelPeligrosidad() {
@@ -21,6 +21,9 @@ class Bumblebee {
 		else {
 			return 30
 		}
+	}
+	method cambiarModo() {
+		esAuto = not esAuto
 	}
 }
 
@@ -55,5 +58,5 @@ class ResiduosRadiactivos {
 	const cantidad
 
 	method peso() = cantidad
-	method nivelPeligrosiadad() = 200
+	method nivelPeligrosidad() = 200
 }
