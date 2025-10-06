@@ -211,3 +211,75 @@ describe "Camion con nuevos mensajes de peso"{
     }
     
 }
+describe "Prueba cosas con bultos" {
+    test "knight Rider, arena a granel y residuos radiactivos tienen un bulto siempre" {
+        const arena = new ArenaAGranel(cantidad = 100)
+        const residuos = new ResiduosRadiactivos(cantidad = 100)
+        assert.equals(1, knightRider.bulto())
+        assert.equals(1, arena.bulto())
+        assert.equals(1, residuos.bulto())
+    }
+    test "bumblebee y embalaje de seguridad tienen 2 bultos siempre"{
+        const embalaje = new EmbalajeDeSeguridad(cosaEmbalada = bumblebee)
+        assert.equals(2, bumblebee.bulto())
+        assert.equals(2, embalaje.bulto())
+        bumblebee.cambiarModo()//No cambia la cantidad de bultos
+        assert.equals(2, bumblebee.bulto())
+    }
+    test "Un paquete de ladrillos tiene 1 bulto si tiene menos de 100 ladrillos, y 2 si tiene entre 101 y 300 ladrillos o 3 si tiene mas"{
+        const paquete50Ladrillos = new PaqueteDeLadrillos(cantidad = 50)
+        const paquete250Ladrillos = new PaqueteDeLadrillos(cantidad = 250)
+        const paquete500Ladrillos = new PaqueteDeLadrillos(cantidad = 500)
+        assert.equals(1, paquete50Ladrillos.bulto())
+        assert.equals(2, paquete250Ladrillos.bulto())
+        assert.equals(3, paquete500Ladrillos.bulto())
+    }
+    test "Una bateria antiaerea tiene 1 bulto si no tiene misiles y 2 si tiene misiles"{
+        const bateriaSinMisiles = new BateriaAntiaerea(tieneMisiles = false)
+        const bateriaConMisiles = new BateriaAntiaerea(tieneMisiles = true)
+        assert.equals(1, bateriaSinMisiles.bulto())
+        assert.equals(2, bateriaConMisiles.bulto())
+    }
+    test "Un contenedor portuario tiene 1 bulto mas la suma de los bultos de las cosas que contiene"{
+        const paquete55Ladrillos = new PaqueteDeLadrillos(cantidad = 55)
+        const bateriaConMisiles = new BateriaAntiaerea(tieneMisiles = true)
+        contenedorPortuario.cargar(paquete55Ladrillos)//1
+        contenedorPortuario.cargar(bateriaConMisiles)//2
+        contenedorPortuario.cargar(bumblebee)//2
+        assert.equals(6, contenedorPortuario.bulto())//1 del contenedor
+    }
+}
+describe "Caso bultos"{
+    test "Un camion vacio tiene 0 bultos"{
+        assert.equals(0, camion.cantidadDeBultosTotal())
+    }
+    test "Un camion con un embalaje,arena, un paquete de 50 ladrillos, una bateria descargada,y un contenedor con knightRider y un bumblebee, tiene 9 bultos"{
+        const embalaje = new EmbalajeDeSeguridad(cosaEmbalada = new ResiduosRadiactivos(cantidad = 100))
+        const arena = new ArenaAGranel(cantidad = 100)
+        const paquete50Ladrillos = new PaqueteDeLadrillos(cantidad = 50)
+        const bateriaSinMisiles = new BateriaAntiaerea(tieneMisiles = false)
+        contenedorPortuario.cargar(knightRider)
+        contenedorPortuario.cargar(bumblebee)
+        camion.cargar(embalaje)
+        camion.cargar(arena)
+        camion.cargar(paquete50Ladrillos)
+        camion.cargar(bateriaSinMisiles)
+        camion.cargar(contenedorPortuario)
+        assert.equals(9, camion.cantidadDeBultosTotal())
+    }
+    test "Un camion con un paquete de 150 ladrillos, una bateria cargada, un contenedor vacio tiene 5 bultos"{
+        const paquete150Ladrillos = new PaqueteDeLadrillos(cantidad = 150)
+        const bateriaConMisiles = new BateriaAntiaerea(tieneMisiles = true)
+        camion.cargar(paquete150Ladrillos)
+        camion.cargar(bateriaConMisiles)
+        camion.cargar(contenedorPortuario)
+        assert.equals(5, camion.cantidadDeBultosTotal())
+    }
+    test "Un camion con un paquete de 350 ladrillos, y arena a granel tiene 4 bultos"{
+        const paquete350Ladrillos = new PaqueteDeLadrillos(cantidad = 350)
+        const arena = new ArenaAGranel(cantidad = 100)
+        camion.cargar(paquete350Ladrillos)
+        camion.cargar(arena)
+        assert.equals(4, camion.cantidadDeBultosTotal())
+    }
+}

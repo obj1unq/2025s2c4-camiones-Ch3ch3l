@@ -18,6 +18,7 @@ object camion {
 	method tieneAlgoQuePesaEntre(pesoMin, pesoMax) =self.todaLaCarga().any({cosa => cosa.peso() >= pesoMin and cosa.peso() <= pesoMax})
 	method cosaMasPesada() = self.todaLaCarga().max({cosa => cosa.peso()})
 	method pesoDeCadaCosaCargada() = self.todaLaCarga().map({cosa => cosa.peso()})
+	method cantidadDeBultosTotal() = cosas.sum({cosa => cosa.bulto()})
 
 	
 	method cargar(unaCosa) {

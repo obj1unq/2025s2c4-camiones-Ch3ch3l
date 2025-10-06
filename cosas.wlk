@@ -2,11 +2,13 @@
 object knightRider {
 	method peso() { return 500 }
 	method nivelPeligrosidad() { return 10 }
+	method bulto() = 1
 }
 object bumblebee {
 	var esAuto = true
 	
 	method peso() = 800
+	method bulto() = 2
 	method nivelPeligrosidad() {
 		if (esAuto) {
 			return 15
@@ -18,6 +20,7 @@ object bumblebee {
 	method cambiarModo() {
 		esAuto = not esAuto
 	}
+	
 }
 object contenedorPortuario {
 	const cosas = #{}
@@ -29,7 +32,7 @@ object contenedorPortuario {
 			}
 			else {
 				return cosas.map({cosa => cosa.nivelPeligrosidad()}).max() // Transformo objetos a numeros(peligrosidad) y hago un max
-			}
+ 			}
 	}
 	method cargar(unaCosa) {
 		cosas.add(unaCosa)
@@ -37,6 +40,7 @@ object contenedorPortuario {
 	method descargar(unaCosa) {
 		cosas.remove(unaCosa)
 	}
+	method bulto() = 1 + cosas.sum({cosa => cosa.bulto()})
 }
 // Clases
 class ArenaAGranel {
@@ -44,6 +48,7 @@ class ArenaAGranel {
 
 	method peso() = cantidad
 	method nivelPeligrosidad() = 1
+	method bulto() = 1
 }
 
 
@@ -52,6 +57,17 @@ class PaqueteDeLadrillos {
 
 	method peso() = cantidad * 2
 	method nivelPeligrosidad() = 2
+	method bulto() {
+		if (cantidad <= 100){
+			return 1
+		}
+		else if (cantidad > 100 and cantidad <= 300){
+			return 2
+		}
+		else {
+			return 3
+		}
+	}
 }
 
 class BateriaAntiaerea {
@@ -73,12 +89,21 @@ class BateriaAntiaerea {
 			return 0
 		}
 	}
+	method bulto() {
+		if (tieneMisiles) {
+			return 2
+		}
+		else {
+			return 1
+		}
+	}
 }
 class ResiduosRadiactivos {
 	const cantidad
 
 	method peso() = cantidad
 	method nivelPeligrosidad() = 200
+	method bulto() = 1
 }
 
 class EmbalajeDeSeguridad {
@@ -86,6 +111,7 @@ class EmbalajeDeSeguridad {
 
 	
 	method peso() = cosaEmbalada.peso()
+	method bulto() = 2
 	method nivelPeligrosidad() = cosaEmbalada.nivelPeligrosidad() / 2
 	method embalar(unaCosa){
 		cosaEmbalada = unaCosa
