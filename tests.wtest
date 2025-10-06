@@ -47,6 +47,7 @@ describe "Carga en camion"{
    
     test "Si no cargo nada el camion esta vacio" {
         assert.equals(#{}, camion.todaLaCarga())
+        assert.equals(true, camion.estaVacio())
     }
     test "Cargar varias cosas"{
         const bumblebee = new Bumblebee(esAuto = true)
@@ -85,4 +86,23 @@ describe "Carga en camion"{
         assert.equals(true, camion.hayCargaConPesoX(800))
         assert.equals(false, camion.hayCargaConPesoX(500))
     }
+}
+describe "Peso en el camion" {
+    test "Con un paquete de 300 ladrillos y un bumblebee el camion no esta lleno"{
+        const pl = new PaqueteDeLadrillos(cantidad = 300)
+        const bumblebee = new Bumblebee(esAuto = true)
+        camion.cargar(pl)
+        camion.cargar(bumblebee)
+        assert.equals(2400, camion.pesoTotal())
+        assert.equals(false, camion.camionLleno())
+    }
+    test "Con un paquete de 400 ladrillos y un bumblebee el camion esta lleno"{
+        const pl = new PaqueteDeLadrillos(cantidad = 400)
+        const bumblebee = new Bumblebee(esAuto = true)
+        camion.cargar(pl)
+        camion.cargar(bumblebee)
+        assert.equals(2600, camion.pesoTotal())
+        assert.equals(true, camion.camionLleno())
+    }
+
 }

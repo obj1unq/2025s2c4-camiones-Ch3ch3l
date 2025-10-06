@@ -2,6 +2,8 @@ import cosas.*
 
 object camion {
 	const property cosas = #{}
+	const pesoMaximo = 2500
+	const pesoCamion = 1000
 		
 	method todaLaCarga() = cosas
 	method estaVacio() = cosas.isEmpty()
@@ -13,7 +15,7 @@ object camion {
 		cosas.remove(unaCosa)
 	}
 	method pesoTotal() {
-		return cosas.sum({cosa => cosa.peso()})
+		return pesoCamion + cosas.sum({cosa => cosa.peso()})
 	}
 	method totalPesoPar(){
 		return self.pesoTotal() % 2 == 0
@@ -22,5 +24,7 @@ object camion {
 	method hayCargaConPesoX(peso){
 		return self.todaLaCarga().any({cosa => cosa.peso() == peso})
 	}
-
+	method camionLleno() {
+		return self.pesoTotal() >= pesoMaximo
+	}
 }
