@@ -1,4 +1,5 @@
 import cosas.*
+import almacen.*
 
 object camion {
 	const property cosas = #{}
@@ -19,8 +20,15 @@ object camion {
 	method cosaMasPesada() = self.todaLaCarga().max({cosa => cosa.peso()})
 	method pesoDeCadaCosaCargada() = self.todaLaCarga().map({cosa => cosa.peso()})
 	method cantidadDeBultosTotal() = cosas.sum({cosa => cosa.bulto()})
+	method puedeCircularEnRutaDePeso(pesoMax) = self.pesoTotal() <= pesoMax
 
 	
+	method transportar(unLugar,camino){
+		if (self.puedeCircularEnRutaDeNivel(camino.peligrosidadMaxima()) and self.puedeCircularEnRutaDePeso(camino.pesoMaximo())){
+			unLugar.almacenar(cosas)
+			cosas.clear()
+		} else{}
+	}
 	method cargar(unaCosa) {
 		cosas.add(unaCosa)
 	}

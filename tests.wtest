@@ -1,5 +1,6 @@
 import camion.*
 import cosas.*
+import almacen-rutas.*
 
 describe "Prueba de objetos"{
     
@@ -320,5 +321,40 @@ describe "Camion tiene accidentes"{
         assert.equals(0, paquete10Ladrillos.peso())
         assert.equals(false, bateriaSinMisiles.tieneMisiles())
     
+    }
+}
+describe "Ahora hay un almacen para dejar las cosas "{
+    const ruta9 = new Ruta(peligrosidadMaxima = 20, pesoMaximo = 9999)
+
+    const residuosRadioactivos = new ResiduosRadiactivos(cantidad = 50)
+    const arena50kg = new ArenaAGranel(cantidad = 50)
+    method initialize(){
+        almacen.almacenar(#{knightRider, residuosRadioactivos})
+        camion.cargar(arena50kg)
+        camion.cargar(bumblebee)
+    }
+    test "Transporte por ruta 9 exitoso"{
+        camion.transportar(almacen, ruta9)
+        assert.equals(#{knightRider,bumblebee,residuosRadioactivos,arena50kg}, almacen.cosasAlmacenadas())
+        assert.equals(#{}, camion.todaLaCarga())
+    }
+    test "Tranporte por ruta 9 cancelado"{//Transporte cancelado por peligrosidad
+        bumblebee.cambiarModo()
+        camion.transportar(almacen, ruta9)
+        assert.equals(30,bumblebee.nivelPeligrosidad())
+        assert.equals(#{knightRider,residuosRadioactivos}, almacen.cosasAlmacenadas())
+        assert.equals(#{arena50kg,bumblebee}, camion.todaLaCarga())
+    }
+    test "Transporte por caminos vecinales exitoso"{
+        const caminosVecinales = new Ruta(peligrosidadMaxima = 9999, pesoMaximo = 2000)
+        camion.transportar(almacen, caminosVecinales)
+        assert.equals(#{knightRider,bumblebee,residuosRadioactivos,arena50kg}, almacen.cosasAlmacenadas())
+        assert.equals(#{}, camion.todaLaCarga())
+    }
+    test "Transpore por caminos vecinales cancelado por superar peso maximo"{
+        const caminosVecinales = new Ruta(peligrosidadMaxima = 9999, pesoMaximo = 300)
+        camion.transportar(almacen, caminosVecinales)
+        assert.equals(#{knightRider,residuosRadioactivos}, almacen.cosasAlmacenadas())
+        assert.equals(#{arena50kg,bumblebee}, camion.todaLaCarga())
     }
 }
